@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
+
 }
 
 android {
@@ -44,7 +49,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "**/*"
         }
     }
 }
@@ -66,4 +71,22 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.android.compiler )
+    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.retrofit2.converter.moshi)
+    implementation(libs.retrofit2.adapter.rxjava2)
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.retrofit2.logging.interceptor)
+
+    implementation(libs.kotlinx.coroutines)
+    implementation(libs.lifecycle.viewmodel.ktx)
+
+    implementation(libs.androidx.compose.materialWindow)
+
 }

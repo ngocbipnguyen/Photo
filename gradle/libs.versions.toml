@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.1"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -8,6 +8,18 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
+
+#Hilt-version
+hilt = "2.51.1" # Use the latest stable version
+hiltNavigationCompose = "1.2.0"
+ksp = "2.0.0-1.0.21"
+#retrofit-version
+retrofit = "2.9.0" # Use the latest stable version
+retrofit_log_interceptor = "4.10.0" # Use the latest stable version
+#coroutines-version
+kotlinx-coroutines-version = "1.7.3"
+lifecycle-viewmodel-ktx-version = "2.8.5"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,7 +37,35 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+#hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+#rereofit
+retrofit2_converter-moshi = { module ="com.squareup.retrofit2:converter-moshi", version.ref = "retrofit"}
+retrofit2_adapter-rxjava2 = { module ="com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit"}
+retrofit2_retrofit = { module ="com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
+retrofit2_converter-gson = { module ="com.squareup.retrofit2:converter-gson", version.ref = "retrofit"}
+retrofit2_logging-interceptor = { module ="com.squareup.okhttp3:logging-interceptor", version.ref = "retrofit_log_interceptor"}
+
+#coroutines
+kotlinx-coroutines = { module= "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref ="kotlinx-coroutines-version"}
+lifecycle-viewmodel-ktx = { module= "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref ="lifecycle-viewmodel-ktx-version"}
+androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+
+#hilt
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 
