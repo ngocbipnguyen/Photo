@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,9 +15,9 @@ import javax.inject.Singleton
 * todo : handler all picture and video
 * */
 @Singleton
-class Gallery @Inject constructor(val context: Context) {
+class Gallery @Inject constructor(@ApplicationContext val context: Context) {
 
-    private fun getMedia(contentResolver: ContentResolver): ArrayList<Media> {
+    fun getMedia(contentResolver: ContentResolver): ArrayList<Media> {
         val allMedia : List<Media> = getImagesMedia(contentResolver) + getVideosMedia(contentResolver)
         allMedia.sortedByDescending { it.dateAdd }
         return allMedia as ArrayList<Media>
