@@ -16,7 +16,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(val gallery: Gallery, @ApplicationContext val context: Context) : ViewModel() {
 
     private var _medias = MutableLiveData<List<Media>>()
-    val media : LiveData<List<Media>> = _medias
+    val media : LiveData<List<Media>> get() =_medias
 
 
     init {

@@ -17,7 +17,7 @@ fun groupMediaByDate(medias: List<Media>): Map<String, List<Media>> {
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
 
     return medias.groupBy { media ->
-        val date = Date(media.dateAdd)
+        val date = Date(media.dateAdd * 1000)
         dateFormat.format(date)
     }
 }

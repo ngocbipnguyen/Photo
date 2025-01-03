@@ -89,4 +89,9 @@ dependencies {
 
     implementation(libs.androidx.compose.materialWindow)
 
+    implementation(libs.androidx.compose.runtime.livedata)
+
+    implementation(libs.coil.compose)
+//    implementation(libs.coil.network.okhttp)
+
 }

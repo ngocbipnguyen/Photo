@@ -17,10 +17,10 @@ import javax.inject.Singleton
 @Singleton
 class Gallery @Inject constructor(@ApplicationContext val context: Context) {
 
-    fun getMedia(contentResolver: ContentResolver): ArrayList<Media> {
-        val allMedia : List<Media> = getImagesMedia(contentResolver) + getVideosMedia(contentResolver)
-        allMedia.sortedByDescending { it.dateAdd }
-        return allMedia as ArrayList<Media>
+    fun getMedia(contentResolver: ContentResolver): List<Media> {
+        val allMedia: List<Media> =
+            getImagesMedia(contentResolver) + getVideosMedia(contentResolver)
+        return allMedia.sortedByDescending { it.dateAdd }
     }
 
 
@@ -52,7 +52,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
             val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
-            val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
+            val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
 
             while (cursor.moveToNext()) {
                 val uri = ContentUris.withAppendedId(collectionUri,cursor.getLong(idColumn))
@@ -99,7 +99,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
             val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)
-            val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)
+            val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
 
             while (cursor.moveToNext()) {
                 val uri = ContentUris.withAppendedId(collectionUri,cursor.getLong(idColumn))
