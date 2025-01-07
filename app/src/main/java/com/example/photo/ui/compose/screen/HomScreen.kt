@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -15,10 +16,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -27,6 +33,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
@@ -145,8 +155,9 @@ fun HomePage(viewModel: HomeViewModel, modifier: Modifier) {
 
         Column(
             modifier = Modifier
-                .background(Color.LightGray).
-            fillMaxHeight()
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .verticalScroll(rememberScrollState())
         ) {
             for ((date, media) in groundMediaByDate) {
                 DateTitle(date = date)
@@ -168,14 +179,28 @@ fun HomePage(viewModel: HomeViewModel, modifier: Modifier) {
 fun PhotoItem(media: Media) {
     if (media.mimeType.contains("video/")) {
         val bitmap = extractFrameFromVideo(LocalContext.current, media.uri)
-        Image(
-            bitmap = bitmap!!.asImageBitmap(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(128.dp)
-                .padding(4.dp)
-        )
+        if (bitmap != null) {
+            Box {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(128.dp)
+                        .padding(4.dp)
+                )
+
+                Icon(
+                    Icons.Rounded.PlayArrow,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(
+                            Alignment.Center
+                        )
+                )
+            }
+        }
     } else {
         AsyncImage(
             model = media.uri,
@@ -208,7 +233,7 @@ fun extractFrameFromVideo(context: Context, videoUri: Uri, frameTimeUs: Long = 0
 fun DateTitle(date: String) {
     Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(16.dp),
+        .padding(start = 8.dp, bottom = 8.dp, top = 20.dp),
         ) {
         Text(text = date, fontSize = 20.sp)
     }
@@ -216,8 +241,16 @@ fun DateTitle(date: String) {
 
 @Composable
 fun RowMedia(medias: List<Media>) {
-    val scrollState = rememberScrollState()
-    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+    var countItem = medias.size / 3
+    val space = medias.size % 3
+    if (space > 0) {
+        countItem ++
+    }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .height(countItem * 128.dp)
+    ) {
         items(medias) {
             PhotoItem(it)
         }
