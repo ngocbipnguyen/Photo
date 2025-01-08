@@ -10,7 +10,8 @@ data class Media(
     val name: String,
     val size: Long,
     val mimeType: String,
-    val dateAdd: Long
+    val dateAdd: Long,
+    val album: String
 )
 
 fun groupMediaByDate(medias: List<Media>): Map<String, List<Media>> {
@@ -22,4 +23,11 @@ fun groupMediaByDate(medias: List<Media>): Map<String, List<Media>> {
     }
 }
 
-data class MediaHeader(val isHeader: Boolean, val date: String? = null, val media: Media? = null)
+
+fun groupMediaByAlbum(medias: List<Media>) : Map<String, List<Media>> {
+    return medias.groupBy { media ->
+        media.album
+    }
+}
+
+data class MediaHeader(val isHeader: Boolean, val date: String? = null, val media: Media? = null, val count : Int = 0)

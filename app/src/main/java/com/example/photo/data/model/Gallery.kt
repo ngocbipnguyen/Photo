@@ -30,6 +30,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.MIME_TYPE,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.DATE_ADDED
         )
 
@@ -53,6 +54,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
             val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
             val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+            val albumAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
 
             while (cursor.moveToNext()) {
                 val uri = ContentUris.withAppendedId(collectionUri,cursor.getLong(idColumn))
@@ -60,9 +62,10 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
                 val size = cursor.getLong(sizeColumn)
                 val mimeType = cursor.getString(mimeTypeColumn)
                 val dateAdd = cursor.getLong(dateAddColumn)
+                val albums = cursor.getString(albumAddColumn)
                 Log.e("GalleryViewModel","uri : $uri")
-                Log.e("GalleryViewModel","mimeType : $mimeType")
-                medias.add(Media(uri,name, size, mimeType,dateAdd))
+                Log.e("GalleryViewModel","albums : $albums")
+                medias.add(Media(uri,name, size, mimeType,dateAdd, albums))
 
             }
 
@@ -77,6 +80,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.SIZE,
             MediaStore.Video.Media.MIME_TYPE,
+            MediaStore.Video.Media.ALBUM,
             MediaStore.Video.Media.DATE_ADDED
         )
 
@@ -100,6 +104,7 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
             val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)
             val dateAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+            val albumAddColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ALBUM)
 
             while (cursor.moveToNext()) {
                 val uri = ContentUris.withAppendedId(collectionUri,cursor.getLong(idColumn))
@@ -107,9 +112,11 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
                 val size = cursor.getLong(sizeColumn)
                 val mimeType = cursor.getString(mimeTypeColumn)
                 val dateAdd = cursor.getLong(dateAddColumn)
+                val album = cursor.getString(albumAddColumn)
+
                 Log.e("GalleryViewModel","uri : $uri")
-                Log.e("GalleryViewModel","mimeType : $mimeType")
-                medias.add(Media(uri,name, size, mimeType,dateAdd))
+                Log.e("GalleryViewModel","album : $album")
+                medias.add(Media(uri,name, size, mimeType,dateAdd, album))
 
             }
         }
@@ -122,7 +129,8 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.MIME_TYPE,
-            MediaStore.Images.Media.DATE_ADDED
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_ADDED,
         )
 
         var newMedia: Media? = null
@@ -137,10 +145,11 @@ class Gallery @Inject constructor(@ApplicationContext val context: Context) {
             val mimeType =
                 cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
             val dateAdd = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
+            val album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
             Log.e("GalleryViewModel","name " + name)
             Log.e("GalleryViewModel","size " + size)
             Log.e("GalleryViewModel","mimeType " + mimeType)
-            newMedia = Media(uri, name, size, mimeType,dateAdd)
+            newMedia = Media(uri, name, size, mimeType,dateAdd,album)
         }
 
         return newMedia

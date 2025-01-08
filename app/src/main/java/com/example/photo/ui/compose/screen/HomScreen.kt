@@ -79,7 +79,11 @@ enum class PhotoPager(
 
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onClickItem: (Int, Media) -> Unit,
+    onClickItemAlbum: (List<Media>) -> Unit
+) {
 
     val context = LocalContext.current
     val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -113,7 +117,11 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     Scaffold { paddingValues ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (permissionsState[Manifest.permission.READ_MEDIA_IMAGES] == true || permissionsState[Manifest.permission.READ_MEDIA_VIDEO] == true) {
-                HomePage(modifier = Modifier.padding(top = paddingValues.calculateTopPadding() ))
+                HomePage(
+                    modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+                    onClickItem = onClickItem,
+                    onClickItemAlbum = onClickItemAlbum
+                )
             } else {
 
                 multiplePermissionsLauncher.launch(permissions.toTypedArray())
@@ -132,7 +140,10 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             }
         } else {
             if (permissionsState[Manifest.permission.READ_EXTERNAL_STORAGE] == true) {
-                HomePage(modifier = Modifier.padding(paddingValues))
+                HomePage(
+                    modifier = Modifier.padding(paddingValues), onClickItem = onClickItem,
+                    onClickItemAlbum = onClickItemAlbum
+                )
             } else {
                 multiplePermissionsLauncher.launch(permissions.toTypedArray())
 //                Column(
@@ -155,9 +166,14 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(modifier: Modifier, pages: Array<PhotoPager> = PhotoPager.values()) {
+fun HomePage(
+    modifier: Modifier,
+    pages: Array<PhotoPager> = PhotoPager.values(),
+    onClickItem: (Int, Media) -> Unit,
+    onClickItemAlbum: (List<Media>) -> Unit
+) {
 
-    val pageState = rememberPagerState(pageCount = {pages.size})
+    val pageState = rememberPagerState(pageCount = { pages.size })
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val coroutineScope = rememberCoroutineScope()
 
@@ -169,14 +185,14 @@ fun HomePage(modifier: Modifier, pages: Array<PhotoPager> = PhotoPager.values())
                 .weight(1f),
             verticalAlignment = Alignment.Top
         ) { index ->
-            when(pages[index]) {
+            when (pages[index]) {
                 PhotoPager.PHOTO_LIST -> {
                     PhotoScreen(modifier = Modifier.fillMaxSize(), onClickPhoto = {
                         //todo
                         coroutineScope.launch {
                             pageState.scrollToPage(PhotoPager.PHOTO_LIST.ordinal)
                         }
-                    })
+                    }, onClickItem = onClickItem)
                 }
 
                 PhotoPager.ALBUM_LIST -> {
@@ -186,7 +202,8 @@ fun HomePage(modifier: Modifier, pages: Array<PhotoPager> = PhotoPager.values())
                             coroutineScope.launch {
                                 pageState.scrollToPage(PhotoPager.ALBUM_LIST.ordinal)
                             }
-                        }
+                        },
+                        onClickItem = onClickItemAlbum
                     )
 
                 }
@@ -206,10 +223,14 @@ fun HomePage(modifier: Modifier, pages: Array<PhotoPager> = PhotoPager.values())
             pages.forEachIndexed { index, page ->
                 val title = stringResource(id = page.titleResId)
                 Tab(
-                    selected = pageState.currentPage == index, onClick = { coroutineScope.launch { pageState.animateScrollToPage(index) } },
+                    selected = pageState.currentPage == index,
+                    onClick = { coroutineScope.launch { pageState.animateScrollToPage(index) } },
                     text = { Text(text = title) },
                     icon = {
-                        Icon(painter = painterResource(id = page.drawableResId) , contentDescription = "")
+                        Icon(
+                            painter = painterResource(id = page.drawableResId),
+                            contentDescription = ""
+                        )
                     },
                     unselectedContentColor = MaterialTheme.colorScheme.secondary
                 )
@@ -339,5 +360,5 @@ fun HomePage(modifier: Modifier, pages: Array<PhotoPager> = PhotoPager.values())
 @Preview(showBackground = true)
 @Composable
 fun previewHomeScreen() {
-    HomeScreen()
+//    HomeScreen()
 }

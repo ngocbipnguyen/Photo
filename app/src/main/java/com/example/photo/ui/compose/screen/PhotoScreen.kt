@@ -5,12 +5,13 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,7 +46,9 @@ import com.example.photo.ui.viewmodel.HomeViewModel
 
 
 @Composable
-fun PhotoScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier = Modifier, onClickPhoto:() -> Unit) {
+fun PhotoScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier = Modifier,
+                onClickPhoto:() -> Unit,
+                onClickItem:(Int, Media) -> Unit) {
 
     val mediaState = viewModel.media.observeAsState()
     if (mediaState.value != null) {
@@ -68,7 +71,7 @@ fun PhotoScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier =
         ) {
             for ((date, media) in groundMediaByDate) {
                 DateTitle(date = date)
-                RowMedia(media)
+                RowMedia(media, onClickItem)
             }
         }
 
@@ -84,7 +87,7 @@ fun PhotoScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier =
 
 
 @Composable
-fun PhotoItem(media: Media) {
+fun PhotoItem(media: Media, modifier: Modifier = Modifier) {
     if (media.mimeType.contains("video/")) {
         val bitmap = extractFrameFromVideo(LocalContext.current, media.uri)
         if (bitmap != null) {
@@ -93,7 +96,7 @@ fun PhotoItem(media: Media) {
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
+                    modifier = modifier
                         .size(128.dp)
                         .padding(4.dp)
                 )
@@ -101,7 +104,7 @@ fun PhotoItem(media: Media) {
                 Icon(
                     Icons.Rounded.PlayArrow,
                     contentDescription = "",
-                    modifier = Modifier
+                    modifier = modifier
                         .size(40.dp)
                         .align(
                             Alignment.Center
@@ -114,7 +117,7 @@ fun PhotoItem(media: Media) {
             model = media.uri,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
+            modifier = modifier
                 .size(128.dp)
                 .padding(4.dp)
         )
@@ -147,8 +150,9 @@ fun DateTitle(date: String) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowMedia(medias: List<Media>) {
+fun RowMedia(medias: List<Media>, onClickItem:(Int, Media) -> Unit) {
     var countItem = medias.size / 3
     val space = medias.size % 3
     if (space > 0) {
@@ -160,7 +164,18 @@ fun RowMedia(medias: List<Media>) {
             .height(countItem * 128.dp)
     ) {
         items(medias) {
-            PhotoItem(it)
+            PhotoItem(it, Modifier.combinedClickable(
+                onClick = {
+                    if (it.mimeType.contains("video/")) {
+                        onClickItem(1, it)
+                    } else {
+                        onClickItem(0, it)
+                    }
+                },
+                onLongClick = {
+                    /*todo : delete image and video.*/
+                }
+            ))
         }
     }
 }

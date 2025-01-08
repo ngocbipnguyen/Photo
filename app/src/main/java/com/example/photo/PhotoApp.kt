@@ -17,7 +17,11 @@ fun PhotoApp() {
 fun ReplyNavHost(navHost: NavHostController) {
     NavHost(navController = navHost, startDestination = Screen.Photo.route) {
         composable(route =  Screen.Photo.route) {
-            HomeScreen()
+            HomeScreen(onClickItem =  { type, media ->
+                // todo photo or video.
+            }, onClickItemAlbum = {
+                // todo list photo and video in album
+            })
         }
     }
 }
